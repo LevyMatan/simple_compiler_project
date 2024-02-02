@@ -3,7 +3,7 @@
 
 cmake_minimum_required(VERSION 3.14...3.22)
 
-project(BuildAll LANGUAGES CXX)
+project(BuildAll LANGUAGES C CXX)
 
 include(../cmake/tools.cmake)
 
