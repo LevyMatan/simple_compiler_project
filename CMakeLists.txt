@@ -73,6 +73,12 @@ target_include_directories(
                          $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
 
+# print the cmake build type:
+message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    add_compile_definitions("DEBUG_ENABLED")
+endif()
+
 # ---- Create an custom target ----
 add_custom_target(trace_db
   COMMAND python ${CMAKE_SOURCE_DIR}/../trace_db.py ${CMAKE_SOURCE_DIR}/../source --output_dir ${CMAKE_SOURCE_DIR}/../

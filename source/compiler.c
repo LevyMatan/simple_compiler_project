@@ -1,7 +1,9 @@
 #include "compiler/compiler.h"
+#include "trace.h"
 
 int compile_file(const char *filename, const char *out_filename, int flags)
 {
+    FW_LOG_ENTERED_FUNCTION();
     // struct compile_process *cp = compile_process_create(filename, out_filename, flags);
     // if (cp == NULL)
     // {
