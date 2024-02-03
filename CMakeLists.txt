@@ -73,6 +73,10 @@ target_include_directories(
                          $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
 )
 
+# ---- Create an custom target ----
+add_custom_target(trace_db
+  COMMAND python ${CMAKE_SOURCE_DIR}/../trace_db.py ${CMAKE_SOURCE_DIR}/../source --output_dir ${CMAKE_SOURCE_DIR}/../
+)
 # ---- Create an installable target ----
 # this allows users to install and find the library via `find_package()`.
 

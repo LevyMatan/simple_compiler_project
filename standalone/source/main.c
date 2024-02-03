@@ -1,8 +1,7 @@
 // #include <simple_compiler_project/version.h>
 #include <stdio.h>
-
 #include "compiler/compiler.h"
-#include "utils/vector.h"
+
 
 int main(void) {
   int res = compile_file("./test.c", "./test", 0);

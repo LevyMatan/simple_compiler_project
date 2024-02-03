@@ -1,7 +1,6 @@
 #include "utils/buffer.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdarg.h>
 
 struct buffer* buffer_create()
 {
