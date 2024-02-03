@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include "common.h"
+#include <stdbool.h>
 
 enum token_type
 {
