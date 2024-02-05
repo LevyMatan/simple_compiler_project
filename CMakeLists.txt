@@ -19,7 +19,7 @@ set(PROJECT_VERSION_PATCH 0)
 # Configure the generation of version.h
 set(SIMPLECOMPILERPROJECT_VERSION "${PROJECT_VERSION}")
 
-configure_file (
+configure_file(
   "${PROJECT_SOURCE_DIR}/version.h.in"
   "${PROJECT_SOURCE_DIR}/include/simple_compiler_project/version.h"
 )
@@ -76,12 +76,13 @@ target_include_directories(
 # print the cmake build type:
 message("CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-    add_compile_definitions("DEBUG_ENABLED")
+  add_compile_definitions("DEBUG_ENABLED")
 endif()
 
 # ---- Create an custom target ----
-add_custom_target(trace_db
-  COMMAND python ${CMAKE_SOURCE_DIR}/../trace_db.py ${CMAKE_SOURCE_DIR}/../source --output_dir ${CMAKE_SOURCE_DIR}/../
+add_custom_target(
+  trace_db COMMAND python ${CMAKE_SOURCE_DIR}/../trace_db.py ${CMAKE_SOURCE_DIR}/../source
+                   --output_dir ${CMAKE_SOURCE_DIR}/../
 )
 # ---- Create an installable target ----
 # this allows users to install and find the library via `find_package()`.

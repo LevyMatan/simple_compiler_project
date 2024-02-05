@@ -373,8 +373,7 @@ int lex(lex_process_t *p_lex_process) {
   return LEXICAL_ANALSYS_ALL_OK;
 }
 
-void debug_print_pos_struct(pos_t *p_pos)
-{
+void debug_print_pos_struct(pos_t *p_pos) {
   printf("{\n");
   printf("  p_pos->line = %d\n", p_pos->line);
   printf("  p_pos->col = %d\n", p_pos->col);

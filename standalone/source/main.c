@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "compiler/compiler.h"
 
+#include "compiler/compiler.h"
 
 int main(void) {
   int res = compile_file("/workspaces/simple_compiler_project/input_files/test.c", NULL, 0);
