@@ -34,9 +34,13 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 
 # enable compiler warnings
 if(NOT TEST_INSTALLED_VERSION)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR 
+     CMAKE_CXX_COMPILER_ID MATCHES "GNU"   OR
+     CMAKE_C_COMPILER_ID MATCHES "Clang"   OR
+     CMAKE_C_COMPILER_ID MATCHES "GNU")
     # target_compile_options(SimpleCompilerProject PUBLIC -Wall -Wpedantic -Wextra -Werror)
-    target_compile_options(SimpleCompilerProject PUBLIC -Wall -Wextra)
+    # add_compile_options(-Wno-gnu-zero-variadic-macro-arguments)
+    # add_compile_options(-Wno-gnu-binary-literal)
   elseif(MSVC)
     target_compile_options(SimpleCompilerProject PUBLIC /W4 /WX)
     target_compile_definitions(${PROJECT_NAME} PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)

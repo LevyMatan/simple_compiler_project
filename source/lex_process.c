@@ -6,7 +6,6 @@
 void debug_print_compile_process(compile_process_t *p_process)
 {
     printf("p_process->cfile.abs_path = %s\n", p_process->cfile.abs_path);
-    printf("p_process->cfile.fp = %p\n", p_process->cfile.fp);
     printf("p_process->s_pos.line = %d\n", p_process->s_pos.line);
     printf("p_process->s_pos.col = %d\n", p_process->s_pos.col);
 }
