@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef MATAN_COMPILER_H
 #define MATAN_COMPILER_H
 #include <stdio.h>
@@ -121,8 +125,9 @@ struct lex_process_s
 int compile_file(const char *filename, const char *out_filename, int flags);
 compile_process_t *compile_process_create(const char *filename, const char *out_filename, int flags);
 
+bool token_is_keyword(const token_t *p_token, const char *p_keyword);
 void compiler_error(compile_process_t *p_process, const char *format, ...);
-
+static token_t* token_make_symbol(void);
 void compiler_warning(compile_process_t *p_process, const char *format, ...);
 
 lex_process_t *lex_process_create(compile_process_t *p_s_compiler, lex_process_function_t *p_s_lex_functions, void *p_private);
@@ -132,4 +137,9 @@ struct vector *lex_process_token_vec(lex_process_t *p_lex_process);
 int lex(lex_process_t *p_lex_process);
 
 void debug_print_compile_process(compile_process_t *p_process);
+void debug_print_pos_struct(pos_t *p_pos);
 #endif // MATAN_COMPILER_H
+
+#ifdef __cplusplus
+}
+#endif

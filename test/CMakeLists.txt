@@ -21,6 +21,7 @@ CPMAddPackage("gh:TheLartians/Format.cmake@1.7.3")
 if(TEST_INSTALLED_VERSION)
   find_package(SimpleCompilerProject REQUIRED)
 else()
+  message(STATUS "Using SimpleCompilerProject from source (not installed version)")
   CPMAddPackage(NAME SimpleCompilerProject SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 endif()
 

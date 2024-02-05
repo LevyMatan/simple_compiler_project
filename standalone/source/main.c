@@ -1,4 +1,3 @@
-// #include <simple_compiler_project/version.h>
 #include <stdio.h>
 #include "compiler/compiler.h"
 

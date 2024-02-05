@@ -1,3 +1,7 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -148,4 +152,8 @@ size_t vector_element_size(struct vector* vector);
  */
 struct vector* vector_clone(struct vector* vector);
 
+#endif
+
+#ifdef __cplusplus
+}
 #endif
