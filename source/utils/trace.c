@@ -36,7 +36,7 @@ void fw_log(enum trace_level level, const char *file, const char *func, int line
         printf("[UNKNOWN] ");
         break;
     }
-    printf("%s:%s:%d: ", file, func, line);
+    printf("%s:%d:%s: ", file, line, func);
     vprintf(fmt, args);
     va_end(args);
 }
