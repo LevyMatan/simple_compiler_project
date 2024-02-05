@@ -15,7 +15,7 @@ extern lex_process_t *g_p_lex_process;
 TEST_CASE("lexer::lex") {
     /**
      * 1. Create a new file to test our lexer on
-     * 2. Write the test string "324+32 ++ (3+2)" to the file
+     * 2. Write the test string '324+32 ++ (3+2) "Hello World!"' to the file
      * 3. Create a new compile_process_t object
      * 4. Create a new lex_process_t object
      * 5. Call lex() on the lex_process_t object
@@ -23,7 +23,7 @@ TEST_CASE("lexer::lex") {
      */ 
     FILE *p_file = fopen("test_lexer.c", "w");
     REQUIRE(p_file != nullptr);
-    fprintf(p_file, "324+32 ++ (3+2)");
+    fprintf(p_file, "324+32 ++ (3+2) \"Hello World!\"");
     fclose(p_file);
 
     compile_process_t *p_process = compile_process_create("test_lexer.c", NULL, 0);
@@ -113,11 +113,20 @@ TEST_CASE("lexer::lex") {
     p_token = (token_t*)vector_at(p_s_token_vec, 8);
     CHECK(p_token != nullptr);
     CHECK(p_token->type == TOKEN_TYPE_SYMBOL);
-    CHECK(p_token->whitespace == false);
+    CHECK(p_token->whitespace == true);
     CHECK(p_token->between_brackets == nullptr);
     CHECK(p_token->s_pos.line == 1);
     CHECK(p_token->s_pos.col == 15);
     CHECK_EQ(p_token->cval, ')');
+
+    p_token = (token_t*)vector_at(p_s_token_vec, 9);
+    CHECK(p_token != nullptr);
+    CHECK(p_token->type == TOKEN_TYPE_STRING);
+    CHECK(p_token->whitespace == false);
+    CHECK(p_token->between_brackets == nullptr);
+    CHECK(p_token->s_pos.line == 1);
+    CHECK(p_token->s_pos.col == 30);
+    CHECK_EQ(std::string(p_token->sval), std::string("Hello World!"));
 
     // Clean up
     remove("test_lexer.c");
