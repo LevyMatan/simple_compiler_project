@@ -1,6 +1,6 @@
 #include <assert.h>
-#include <string.h>
 #include <ctype.h>
+#include <string.h>
 
 #include "compiler/compiler.h"
 #include "trace.h"
@@ -365,8 +365,7 @@ static token_t *token_make_identifier_or_keyword(void) {
     return token_create(&s_token);
 }
 
-
-token_t* read_special_token(void) {
+token_t *read_special_token(void) {
     char c = peekc();
     if (isalpha(c) || c == '_') {
         return token_make_identifier_or_keyword();
