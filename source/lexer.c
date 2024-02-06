@@ -100,12 +100,52 @@ static void lex_new_expression(void) {
     }
 }
 
+void debug_log_token(token_t *p_s_token) {
+    FW_LOG_DEBUG("A new Token: {\n");
+    FW_LOG_DEBUG("  .type = %d\n", p_s_token->type);
+    if (p_s_token->type == TOKEN_TYPE_NUMBER) {
+        FW_LOG_DEBUG("  .llval = %llu\n", p_s_token->llval);
+    }
+    else if (p_s_token->type == TOKEN_TYPE_STRING)
+    {
+        FW_LOG_DEBUG("  .sval = %s\n", p_s_token->sval);
+    }
+    else if (p_s_token->type == TOKEN_TYPE_OPERATOR)
+    {
+        FW_LOG_DEBUG("  .sval = %s\n", p_s_token->sval);
+    }
+    else if (p_s_token->type == TOKEN_TYPE_SYMBOL)
+    {
+        FW_LOG_DEBUG("  .cval = %c\n", p_s_token->cval);
+    }
+    else if (p_s_token->type == TOKEN_TYPE_NEWLINE)
+    {
+        FW_LOG_DEBUG("  .cval = NEW_LINE\n");
+    }
+    else if (p_s_token->type == TOKEN_TYPE_COMMENT)
+    {
+        FW_LOG_DEBUG("  .sval = %s\n", p_s_token->sval);
+    }
+    else if (p_s_token->type == TOKEN_TYPE_IDENTIFIER)
+    {
+        FW_LOG_DEBUG("  .sval = %s\n", p_s_token->sval);
+    }
+    FW_LOG_DEBUG("  .whitespace = %d\n", p_s_token->whitespace);
+    if (p_s_token->between_brackets){
+        FW_LOG_DEBUG("  .between_brackets = %s\n", p_s_token->between_brackets);
+    }
+    FW_LOG_DEBUG("  .s_pos = ");
+    debug_print_pos_struct(&p_s_token->s_pos);
+    FW_LOG_DEBUG("}\n");
+}
 bool lex_is_in_an_expression(void) { return g_p_lex_process->current_expression_count > 0; }
 token_t *token_create(token_t *p_token) {
     memcpy(&tmp_token, p_token, sizeof(token_t));
-    printf("tmp_token.type = %d\n", tmp_token.type);
     tmp_token.s_pos = lex_file_position();
-    printf("tmp_token.s_pos.line = %d\n", tmp_token.s_pos.line);
+
+    // Log token information
+    debug_log_token(&tmp_token);
+    
     return &tmp_token;
 }
 
@@ -487,9 +527,5 @@ int lex(lex_process_t *p_lex_process) {
 }
 
 void debug_print_pos_struct(pos_t *p_pos) {
-    printf("{\n");
-    printf("  p_pos->line = %d\n", p_pos->line);
-    printf("  p_pos->col = %d\n", p_pos->col);
-    printf("  p_pos->filename = %s\n", p_pos->filename);
-    printf("}\n");
+    printf("{ .line = %d, .col = %d, .filename = %s }\n", p_pos->line, p_pos->col, p_pos->filename);
 }
