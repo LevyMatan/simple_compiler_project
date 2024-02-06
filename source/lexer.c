@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "compiler/compiler.h"
 #include "trace.h"
@@ -328,6 +329,51 @@ static token_t *token_make_symbol(void) {
     };
     return token_create(&s_token);
 }
+
+// clang-format off
+static bool identifier_is_keyword(const char *p_str) {
+    // Verify if the string is a keyword
+    return S_EQ(p_str, "if")       || S_EQ(p_str, "else")     || S_EQ(p_str, "while") || S_EQ(p_str, "for")
+        || S_EQ(p_str, "do")       || S_EQ(p_str, "return")   || S_EQ(p_str, "break")
+        || S_EQ(p_str, "continue") || S_EQ(p_str, "switch")   || S_EQ(p_str, "case")
+        || S_EQ(p_str, "default")  || S_EQ(p_str, "goto")     || S_EQ(p_str, "typedef")
+        || S_EQ(p_str, "struct")   || S_EQ(p_str, "enum")     || S_EQ(p_str, "union")
+        || S_EQ(p_str, "const")    || S_EQ(p_str, "volatile") || S_EQ(p_str, "extern")
+        || S_EQ(p_str, "static")   || S_EQ(p_str, "register") || S_EQ(p_str, "auto")
+        || S_EQ(p_str, "void")     || S_EQ(p_str, "char")     || S_EQ(p_str, "short")
+        || S_EQ(p_str, "int")      || S_EQ(p_str, "long")     || S_EQ(p_str, "float")
+        || S_EQ(p_str, "double")   || S_EQ(p_str, "signed")   || S_EQ(p_str, "unsigned")
+        || S_EQ(p_str, "sizeof")   || S_EQ(p_str, "alignof")  || S_EQ(p_str, "offsetof")
+        || S_EQ(p_str, "asm")      || S_EQ(p_str, "inline")   || S_EQ(p_str, "restrict")
+        || S_EQ(p_str, "bool")     || S_EQ(p_str, "true")     || S_EQ(p_str, "false")
+        || S_EQ(p_str, "NULL")     || S_EQ(p_str, "va_list")  || S_EQ(p_str, "va_start")
+        || S_EQ(p_str, "va_end")   || S_EQ(p_str, "va_arg")   || S_EQ(p_str, "va_copy");
+}
+// clang-format on
+
+static token_t *token_make_identifier_or_keyword(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    struct buffer *p_buffer = buffer_create();
+    LEX_GETC_IF(p_buffer, c,
+                (IS_NUMERIC(c) || ('_' == c) || ('a' <= c && c <= 'z') || ('A' <= c && c <= 'Z')));
+    buffer_write(p_buffer, '\0');
+    const char *p_str = buffer_ptr(p_buffer);
+    token_t s_token = {
+        .type = identifier_is_keyword(p_str) ? TOKEN_TYPE_KEYWORD : TOKEN_TYPE_IDENTIFIER,
+        .sval = p_str,
+    };
+    return token_create(&s_token);
+}
+
+
+token_t* read_special_token(void) {
+    char c = peekc();
+    if (isalpha(c) || c == '_') {
+        return token_make_identifier_or_keyword();
+    }
+    return NULL;
+}
+
 token_t *read_next_token(void) {
     token_t *p_s_token = NULL;
     char c = peekc();
@@ -344,19 +390,22 @@ token_t *read_next_token(void) {
     SYMBOL_CASE:
         p_s_token = token_make_symbol();
         break;
-    case '"':
-        p_s_token = token_make_string('"', '"');
-        break;
-    case ' ':
-    case '\t':
-        p_s_token = handle_whitespace();
-        break;
-    case EOF:
-        // We have finished reading the file. do nothing
-        break;
-    default:
-        compiler_error(g_p_lex_process->p_s_compiler, "Unexpected token '%c' \n", c);
-        break;
+        case '"':
+            p_s_token = token_make_string('"', '"');
+            break;
+        case ' ':
+        case '\t':
+            p_s_token = handle_whitespace();
+            break;
+        case EOF:
+            // We have finished reading the file. do nothing
+            break;
+        default:
+            p_s_token = read_special_token();
+            if (p_s_token == NULL) {
+                compiler_error(g_p_lex_process->p_s_compiler, "Unexpected token '%c' \n", c);
+            }
+            break;
     }
     return p_s_token;
 }
