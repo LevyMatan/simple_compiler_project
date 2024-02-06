@@ -7,13 +7,13 @@
 #define FILENAME_MAX 1024
 
 #ifndef SEEK_SET
-#  define SEEK_SET 0 /* set file offset to offset */
+#    define SEEK_SET 0 /* set file offset to offset */
 #endif
 #ifndef SEEK_CUR
-#  define SEEK_CUR 1 /* set file offset to current plus offset */
+#    define SEEK_CUR 1 /* set file offset to current plus offset */
 #endif
 #ifndef SEEK_END
-#  define SEEK_END 2 /* set file offset to EOF plus offset */
+#    define SEEK_END 2 /* set file offset to EOF plus offset */
 #endif
 
 #define __LITTLE_ENDIAN 1234
@@ -251,7 +251,7 @@
 #define ATOMIC_POINTER_LOCK_FREE 0
 #define ATOMIC_VAR_INIT(value) (value)
 #define ATOMIC_FLAG_INIT \
-  { 0 }
+    { 0 }
 #define kill_dependency(y) (y)
 
 /* C11 stdalign.h defines */

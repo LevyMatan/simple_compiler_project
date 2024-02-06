@@ -46,18 +46,18 @@ const char *strip_path(const char *path);
 #define __FILENAME__ (strip_path(__FILE__))
 
 #ifdef DEBUG_ENABLED
-#  define FW_LOG_DEBUG(fmt, ...) \
-    fw_log(TRACE_LEVEL_DEBUG, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
+#    define FW_LOG_DEBUG(fmt, ...) \
+        fw_log(TRACE_LEVEL_DEBUG, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 #else
-#  define FW_LOG_DEBUG(fmt, ...)
+#    define FW_LOG_DEBUG(fmt, ...)
 #endif
 
 #define FW_LOG_INFO(fmt, ...) \
-  fw_log(TRACE_LEVEL_INFO, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
+    fw_log(TRACE_LEVEL_INFO, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 #define FW_LOG_ERROR(fmt, ...) \
-  fw_log(TRACE_LEVEL_ERROR, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
+    fw_log(TRACE_LEVEL_ERROR, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 #define FW_LOG_WARN(fmt, ...) \
-  fw_log(TRACE_LEVEL_WARN, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
+    fw_log(TRACE_LEVEL_WARN, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 
 #define FW_LOG_ENTERED_FUNCTION() FW_LOG_DEBUG("Entered function\n")
 
