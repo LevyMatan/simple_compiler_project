@@ -344,19 +344,19 @@ token_t *read_next_token(void) {
     SYMBOL_CASE:
         p_s_token = token_make_symbol();
         break;
-        case '"':
-            p_s_token = token_make_string('"', '"');
-            break;
-        case ' ':
-        case '\t':
-            p_s_token = handle_whitespace();
-            break;
-        case EOF:
-            // We have finished reading the file. do nothing
-            break;
-        default:
-            compiler_error(g_p_lex_process->p_s_compiler, "Unexpected token '%c' \n", c);
-            break;
+    case '"':
+        p_s_token = token_make_string('"', '"');
+        break;
+    case ' ':
+    case '\t':
+        p_s_token = handle_whitespace();
+        break;
+    case EOF:
+        // We have finished reading the file. do nothing
+        break;
+    default:
+        compiler_error(g_p_lex_process->p_s_compiler, "Unexpected token '%c' \n", c);
+        break;
     }
     return p_s_token;
 }

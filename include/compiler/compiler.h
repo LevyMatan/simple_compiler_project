@@ -118,7 +118,7 @@ compile_process_t *compile_process_create(const char *filename, const char *out_
 
 bool token_is_keyword(const token_t *p_token, const char *p_keyword);
 void compiler_error(compile_process_t *p_process, const char *format, ...);
-// static token_t* token_make_symbol(void);
+static token_t* token_make_symbol(void);
 void compiler_warning(compile_process_t *p_process, const char *format, ...);
 
 lex_process_t *lex_process_create(compile_process_t *p_s_compiler,
