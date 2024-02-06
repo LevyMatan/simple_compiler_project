@@ -1,7 +1,1 @@
-/* int var1 = 2; // comment
-int var2 = 3;
-
-
-
-
-*/
+int var = 6;
