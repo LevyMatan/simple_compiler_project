@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 
+const char* g_a_log_level[] = {"[DEBUG]", "[INFO]", "[WARNING]", "[ERROR]"};
+
 /**
  * @brief
  *
@@ -14,27 +16,11 @@
  * @param fmt
  * @param ...
  */
-void fw_log(enum trace_level level, const char* file, const char* func, int line, const char* fmt,
+void fw_log(trace_level_e level, const char* file, const char* func, int line, const char* fmt,
             ...) {
     va_list args;
     va_start(args, fmt);
-    switch (level) {
-        case TRACE_LEVEL_DEBUG:
-            printf("[DEBUG] ");
-            break;
-        case TRACE_LEVEL_INFO:
-            printf("[INFO] ");
-            break;
-        case TRACE_LEVEL_WARNING:
-            printf("[WARNING] ");
-            break;
-        case TRACE_LEVEL_ERROR:
-            printf("[ERROR] ");
-            break;
-        default:
-            printf("[UNKNOWN] ");
-            break;
-    }
+    printf("%s ", g_a_log_level[level]);
     printf("%s:%d:%s: ", file, line, func);
     vprintf(fmt, args);
     va_end(args);

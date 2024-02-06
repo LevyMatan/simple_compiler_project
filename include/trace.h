@@ -21,7 +21,12 @@
  * @brief
  *
  */
-enum trace_level { TRACE_LEVEL_DEBUG, TRACE_LEVEL_INFO, TRACE_LEVEL_WARNING, TRACE_LEVEL_ERROR };
+typedef enum trace_level {
+    TRACE_LEVEL_DEBUG,
+    TRACE_LEVEL_INFO,
+    TRACE_LEVEL_WARNING,
+    TRACE_LEVEL_ERROR
+} trace_level_e;
 
 /**
  * @brief
@@ -33,7 +38,7 @@ enum trace_level { TRACE_LEVEL_DEBUG, TRACE_LEVEL_INFO, TRACE_LEVEL_WARNING, TRA
  * @param fmt
  * @param ...
  */
-void fw_log(enum trace_level level, const char *file, const char *func, int line, const char *fmt,
+void fw_log(trace_level_e level, const char *file, const char *func, int line, const char *fmt,
             ...);
 
 /**

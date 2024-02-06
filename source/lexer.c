@@ -7,10 +7,11 @@
 #include "utils/buffer.h"
 #include "utils/vector.h"
 
-#define LEX_GETC_IF(buffer_, c_, exp_)            \
-    for (char c_ = peekc(); exp_; c_ = peekc()) { \
-        buffer_write(buffer_, c_);                \
-        nextc();                                  \
+#define LEX_GETC_IF(buffer_, c_, exp_) \
+    char c_ = peekc();                 \
+    for (; exp_; c_ = peekc()) {       \
+        buffer_write(buffer_, c_);     \
+        nextc();                       \
     }
 
 #define IS_NUMERIC(c) (((c) >= '0') && ((c) <= '9'))
@@ -84,6 +85,12 @@ static char nextc(void) {
 
 static void pushc(char c) { g_p_lex_process->function->push_char(g_p_lex_process, c); }
 
+static char peek_next_c(void) {
+    char current_char = nextc();
+    char next_char = peekc();
+    pushc(current_char);
+    return next_char;
+}
 static void lex_new_expression(void) {
     FW_LOG_ENTERED_FUNCTION();
     g_p_lex_process->current_expression_count++;
@@ -373,14 +380,64 @@ token_t *read_special_token(void) {
     return NULL;
 }
 
+token_t *token_make_newline(void) {
+    nextc();
+    token_t s_token = {
+        .type = TOKEN_TYPE_NEWLINE,
+    };
+    return token_create(&s_token);
+}
+token_t *token_make_one_line_comment(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    struct buffer *p_buffer = buffer_create();
+    LEX_GETC_IF(p_buffer, c, (c != '\n' && c != EOF));
+    buffer_write(p_buffer, '\0');
+    token_t s_token = {
+        .type = TOKEN_TYPE_COMMENT,
+        .sval = buffer_ptr(p_buffer),
+    };
+    return token_create(&s_token);
+}
+
+token_t *token_make_multi_line_comment(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    struct buffer *p_buffer = buffer_create();
+    LEX_GETC_IF(p_buffer, c, (c != EOF && !(c == '*' && peek_next_c() == '/')));
+    if (EOF == c) {
+        compiler_error(g_p_lex_process->p_s_compiler,
+                       "Unexpected end of file, in the middle of multi-line comment\n");
+    }
+    nextc();
+    nextc();
+    buffer_write(p_buffer, '\0');
+    token_t s_token = {
+        .type = TOKEN_TYPE_COMMENT,
+        .sval = buffer_ptr(p_buffer),
+    };
+    return token_create(&s_token);
+}
+
+token_t *token_make_comment(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    // We have already read the first '/' character
+    // but we need to consume it to dermine if it is a one line or multi line comment
+    nextc();
+    char c = peekc();
+    if (c == '/') {
+        return token_make_one_line_comment();
+    }
+    if (c == '*') {
+        return token_make_multi_line_comment();
+    }
+    pushc('/');
+    return token_make_operator_or_string();
+}
 token_t *read_next_token(void) {
     token_t *p_s_token = NULL;
     char c = peekc();
-    printf("I am read_next_token! with c = %c\n", c);
     switch (c) {
     NUMERIC_CASE:
         p_s_token = token_make_number();
-        printf("p_s_token->type = %d\n", p_s_token->type);
         break;
 
     OPERATOR_CASE_EXCLUDING_DIVISION:
@@ -395,6 +452,12 @@ token_t *read_next_token(void) {
         case ' ':
         case '\t':
             p_s_token = handle_whitespace();
+            break;
+        case '\n':
+            p_s_token = token_make_newline();
+            break;
+        case '/':
+            p_s_token = token_make_comment();
             break;
         case EOF:
             // We have finished reading the file. do nothing
