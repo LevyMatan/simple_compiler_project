@@ -460,6 +460,55 @@ token_t *token_make_comment(void) {
     pushc('/');
     return token_make_operator_or_string();
 }
+
+char lex_get_escaped_char(char c) {
+    switch (c) {
+        case 'n':
+            return '\n';
+        case 't':
+            return '\t';
+        case 'r':
+            return '\r';
+        case '0':
+            return '\0';
+        case '\\':
+            return '\\';
+        case '\'':
+            return '\'';
+        case '\"':
+            return '\"';
+        default:
+            compiler_error(g_p_lex_process->p_s_compiler, "Unknown escape sequence '\\%c'\n", c);
+            return c;
+    }
+}
+
+static char assert_next_char(char expected) {
+    char c = nextc();
+    if (c != expected) {
+        compiler_error(g_p_lex_process->p_s_compiler, "Expected '%c' but got '%c'\n", expected, c);
+        assert(0);
+    }
+    return c;
+}
+token_t *token_make_quates(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    assert_next_char('\'');
+    char c = nextc();
+    if (c == '\\') {
+        c = nextc();
+        c = lex_get_escaped_char(c);
+    }
+    if (nextc() != '\'') {
+        compiler_error(g_p_lex_process->p_s_compiler, "Expected closing quate\n");
+    }
+
+    token_t p_s_token = {
+        .type = TOKEN_TYPE_NUMBER,
+        .cval = c,
+    };
+    return token_create(&p_s_token);
+}
 token_t *read_next_token(void) {
     token_t *p_s_token = NULL;
     char c = peekc();
@@ -486,6 +535,9 @@ token_t *read_next_token(void) {
             break;
         case '/':
             p_s_token = token_make_comment();
+            break;
+        case '\'':
+            p_s_token = token_make_quates();
             break;
         case EOF:
             // We have finished reading the file. do nothing
