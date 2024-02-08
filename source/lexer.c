@@ -509,6 +509,48 @@ token_t *token_make_quates(void) {
     };
     return token_create(&p_s_token);
 }
+
+void lexer_pop_token(void) { vector_pop(g_p_lex_process->p_s_token_vec); }
+
+token_t *token_make_special_number_hexadecimal(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    // We have already read the first 'x' character need to pop it
+    nextc();
+    struct buffer *p_buffer = buffer_create();
+    LEX_GETC_IF(p_buffer, c, (IS_NUMERIC(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F')));
+    buffer_write(p_buffer, '\0');
+    unsigned long value = strtoul(buffer_ptr(p_buffer), NULL, 16);
+    return token_make_number_by_value(value);
+}
+
+token_t *token_make_special_number_binary(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    // We have already read the first 'b' character need to pop it
+    nextc();
+    struct buffer *p_buffer = buffer_create();
+    LEX_GETC_IF(p_buffer, c, (c == '0' || c == '1'));
+    buffer_write(p_buffer, '\0');
+    unsigned long value = strtoul(buffer_ptr(p_buffer), NULL, 2);
+    return token_make_number_by_value(value);
+}
+
+token_t *token_make_special_number(void) {
+    FW_LOG_ENTERED_FUNCTION();
+    token_t *p_s_token = NULL;
+    token_t *p_s_last_token = lexer_last_token();
+
+    lexer_pop_token();
+
+    char c = peekc();
+    if (c == 'x' || c == 'X') {
+        p_s_token = token_make_special_number_hexadecimal();
+    } else if (c == 'b' || c == 'B') {
+        p_s_token = token_make_special_number_binary();
+    }
+
+    return p_s_token;
+}
+
 token_t *read_next_token(void) {
     token_t *p_s_token = NULL;
     char c = peekc();
@@ -523,6 +565,12 @@ token_t *read_next_token(void) {
     SYMBOL_CASE:
         p_s_token = token_make_symbol();
         break;
+        case 'x':
+        case 'X':
+        case 'b':
+        case 'B':
+            p_s_token = token_make_special_number();
+            break;
         case '"':
             p_s_token = token_make_string('"', '"');
             break;
