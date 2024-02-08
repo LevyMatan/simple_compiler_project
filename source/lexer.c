@@ -539,6 +539,10 @@ token_t *token_make_special_number(void) {
     token_t *p_s_token = NULL;
     token_t *p_s_last_token = lexer_last_token();
 
+    if (!p_s_last_token
+        || !((p_s_last_token->type == TOKEN_TYPE_NUMBER) && (p_s_last_token->llval == 0))) {
+        return token_make_identifier_or_keyword();
+    }
     lexer_pop_token();
 
     char c = peekc();
