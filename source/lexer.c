@@ -127,7 +127,7 @@ void debug_log_token(token_t *p_s_token) {
     if (p_s_token->between_brackets) {
         FW_LOG_DEBUG("  .between_brackets = %s\n", p_s_token->between_brackets);
     }
-    FW_LOG_DEBUG("  .s_pos = ");
+    FW_LOG_DEBUG("  .s_pos = \n");
     debug_print_pos_struct(&p_s_token->s_pos);
     FW_LOG_DEBUG("}\n");
 }
@@ -177,8 +177,30 @@ unsigned long long read_number(void) {
     return value;
 }
 
+number_type_e lexer_number_type(const char c) {
+    number_type_e e_number_type = NUMBER_TYPE_INT;
+    if ('L' == c || 'l' == c) {
+        e_number_type = NUMBER_TYPE_LONG;
+        nextc();
+        if ('L' == peekc() || 'l' == peekc()) {
+            e_number_type = NUMBER_TYPE_LONG_LONG;
+            // nextc();
+        }
+    }
+    if ('f' == c || 'F' == c) {
+        e_number_type = NUMBER_TYPE_FLOAT;
+        // nextc();
+    }
+    return e_number_type;
+}
+
 token_t *token_make_number_by_value(unsigned long long value) {
     FW_LOG_ENTERED_FUNCTION();
+
+    number_type_e e_number_type = lexer_number_type(peekc());
+    if (e_number_type != NUMBER_TYPE_INT) {
+        nextc();
+    }
     token_t p_s_token = {
         .type = TOKEN_TYPE_NUMBER,
         .llval = value,
@@ -625,6 +647,49 @@ int lex(lex_process_t *p_lex_process) {
     return LEXICAL_ANALSYS_ALL_OK;
 }
 
+char lexer_string_buffer_next_char(lex_process_t *p_lex_process) {
+    struct buffer *p_buffer = lex_process_private(p_lex_process);
+    return buffer_read(p_buffer);
+}
+
+char lexer_string_buffer_peek_char(lex_process_t *p_lex_process) {
+    struct buffer *p_buffer = lex_process_private(p_lex_process);
+    return buffer_peek(p_buffer);
+}
+
+void lexer_string_buffer_push_char(lex_process_t *p_lex_process, char c) {
+    struct buffer *p_buffer = lex_process_private(p_lex_process);
+    buffer_write(p_buffer, c);
+}
+
+lex_process_function_t lexer_string_buffer_functions = {
+    .next_char = lexer_string_buffer_next_char,
+    .peek_char = lexer_string_buffer_peek_char,
+    .push_char = lexer_string_buffer_push_char,
+};
+
+lex_process_t *tokens_build_for_string(compile_process_t *p_compiler, const char *str) {
+    struct buffer *p_buffer = buffer_create();
+    buffer_printf(p_buffer, str);
+    lex_process_t *p_lex_process
+        = lex_process_create(p_compiler, &lexer_string_buffer_functions, p_buffer);
+
+    if (!p_lex_process) {
+        // buffer_destroy(p_buffer);
+        return NULL;
+    }
+
+    if (lex(p_lex_process) != LEXICAL_ANALSYS_ALL_OK) {
+        // lex_process_destroy(p_lex_process);
+        return NULL;
+    }
+    return p_lex_process;
+}
+
 void debug_print_pos_struct(pos_t *p_pos) {
-    printf("{ .line = %d, .col = %d, .filename = %s }\n", p_pos->line, p_pos->col, p_pos->filename);
+    FW_LOG_DEBUG("  {\n");
+    FW_LOG_DEBUG("    .line = %d,\n", p_pos->line);
+    FW_LOG_DEBUG("    .col = %d,\n", p_pos->col);
+    FW_LOG_DEBUG("    .filename = %s,\n", p_pos->filename);
+    FW_LOG_DEBUG("}\n");
 }

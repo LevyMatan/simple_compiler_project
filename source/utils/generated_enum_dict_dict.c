@@ -19,3 +19,10 @@ char* token_type_dict[9] = {
     "TOKEN_TYPE_SYMBOL",     "TOKEN_TYPE_NUMBER",  "TOKEN_TYPE_STRING",
     "TOKEN_TYPE_COMMENT",    "TOKEN_TYPE_NEWLINE", "TOKEN_TYPE_EOF",
 };
+
+char* number_type_dict[4] = {
+    "NUMBER_TYPE_INT",
+    "NUMBER_TYPE_LONG",
+    "NUMBER_TYPE_LONG_LONG",
+    "NUMBER_TYPE_FLOAT",
+};

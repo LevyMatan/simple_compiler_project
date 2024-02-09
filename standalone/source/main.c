@@ -11,5 +11,7 @@ int main(void) {
     } else {
         printf("Unknown error!\n");
     }
+
+    // lex_process_t *p_lex_process = tokens_build_for_string("int main() { return 0; }");
     return 0;
 }

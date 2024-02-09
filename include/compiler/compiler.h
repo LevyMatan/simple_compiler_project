@@ -56,6 +56,13 @@ typedef struct token_s {
 
 } token_t;
 
+typedef enum number_type {
+    NUMBER_TYPE_INT,
+    NUMBER_TYPE_LONG,
+    NUMBER_TYPE_LONG_LONG,
+    NUMBER_TYPE_FLOAT,
+} number_type_e;
+
 enum {
     COMPILER_FILE_COMPILED_OK,
     COMPILER_FAILED_WITH_ERRORS,
@@ -70,6 +77,8 @@ typedef struct compile_process_s {
         const char *abs_path;
 
     } cfile;
+
+    struct vector *p_s_token_vec;
 
     FILE *ofile;
 } compile_process_t;
@@ -128,6 +137,12 @@ void lex_process_free(lex_process_t *p_lex_process);
 void *lex_process_private(lex_process_t *p_lex_process);
 struct vector *lex_process_token_vec(lex_process_t *p_lex_process);
 int lex(lex_process_t *p_lex_process);
+
+/**
+ * @brief Create a token vector from a string, using the lexer.
+ *
+ */
+lex_process_t *tokens_build_for_string(compile_process_t *p_compiler, const char *str);
 
 void debug_print_compile_process(compile_process_t *p_process);
 void debug_print_pos_struct(pos_t *p_pos);

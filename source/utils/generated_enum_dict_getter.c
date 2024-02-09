@@ -30,6 +30,14 @@ char *get_token_type_name(void *p_type) {
     return token_type_dict[type];
 }
 
+char *get_number_type_name(void *p_type) {
+    int type = *(int *)p_type;
+    if (type < 0 || type >= sizeof(number_type_dict) / sizeof(number_type_dict[0])) {
+        return "Invalid type";
+    }
+    return number_type_dict[type];
+}
+
 char *get_int_name(void *p_type) {
     int val = *(int *)p_type;
     sprintf(type_val_string, "%d\n", val);
@@ -74,22 +82,24 @@ char *get_long_long_name(void *p_type) {
 
 getter_func_t g_a_getters[] = {
     get_trace_level_name, get_LEXICAL_ANALSYS_STATAUS_name,
-    get_token_type_name,  get_int_name,
-    get_float_name,       get_double_name,
-    get_char_name,        get_short_name,
-    get_long_name,        get_long_long_name,
+    get_token_type_name,  get_number_type_name,
+    get_int_name,         get_float_name,
+    get_double_name,      get_char_name,
+    get_short_name,       get_long_name,
+    get_long_long_name,
 };
 
 int typename_to_idx(const char *type_name) {
     if (strcmp(type_name, "trace_level") == 0) return 0;
     if (strcmp(type_name, "LEXICAL_ANALSYS_STATAUS") == 0) return 1;
     if (strcmp(type_name, "token_type") == 0) return 2;
-    if (strcmp(type_name, "int") == 0) return 3;
-    if (strcmp(type_name, "float") == 0) return 4;
-    if (strcmp(type_name, "double") == 0) return 5;
-    if (strcmp(type_name, "char") == 0) return 6;
-    if (strcmp(type_name, "short") == 0) return 7;
-    if (strcmp(type_name, "long") == 0) return 8;
-    if (strcmp(type_name, "long_long") == 0) return 9;
+    if (strcmp(type_name, "number_type") == 0) return 3;
+    if (strcmp(type_name, "int") == 0) return 4;
+    if (strcmp(type_name, "float") == 0) return 5;
+    if (strcmp(type_name, "double") == 0) return 6;
+    if (strcmp(type_name, "char") == 0) return 7;
+    if (strcmp(type_name, "short") == 0) return 8;
+    if (strcmp(type_name, "long") == 0) return 9;
+    if (strcmp(type_name, "long_long") == 0) return 10;
     return -1;  // Return -1 if type_name is not found
 }

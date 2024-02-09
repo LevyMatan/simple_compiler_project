@@ -49,6 +49,8 @@ int compile_file(const char *filename, const char *out_filename, int flags) {
         FW_LOG_ERROR("Failed to lex file!\n");
         return COMPILER_FAILED_WITH_ERRORS;
     }
+
+    p_process->p_s_token_vec = p_lex_process->p_s_token_vec;
     // Preform parsing
 
     // Preform code generation
