@@ -47,14 +47,10 @@ char compile_process_next_char(lex_process_t *p_lex_process) {
 
 char compile_process_peek_char(lex_process_t *p_lex_process) {
     FW_LOG_ENTERED_FUNCTION();
-    FW_LOG_DEBUG("p_lex_process = %p\n", p_lex_process);
     compile_process_t *compiler = p_lex_process->p_s_compiler;
-    FW_LOG_DEBUG("compiler = %p\n", compiler);
-    FW_LOG_DEBUG("compiler->cfile.fp = %p\n", compiler->cfile.fp);
     char c = getc(compiler->cfile.fp);
-    FW_LOG_DEBUG("c = %c\n", c);
+    FW_LOG_DEBUG("peeking at c = %c\n", c);
     ungetc(c, compiler->cfile.fp);
-    FW_LOG_DEBUG("Done ungetc\n");
     return c;
 }
 
