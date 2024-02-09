@@ -74,6 +74,11 @@ static char peekc(void) {
 
 static char nextc(void) {
     char c = g_p_lex_process->function->next_char(g_p_lex_process);
+
+    if (lex_is_in_an_expression()) {
+        buffer_write(g_p_lex_process->p_parantheses_buffer, c);
+    }
+
     if (c == '\n') {
         g_p_lex_process->s_pos.line++;
         g_p_lex_process->s_pos.col = 0;
@@ -102,7 +107,7 @@ static void lex_new_expression(void) {
 
 void debug_log_token(token_t *p_s_token) {
     FW_LOG_DEBUG("A new Token: {\n");
-    FW_LOG_DEBUG("  .type = %d\n", p_s_token->type);
+    FW_LOG_DEBUG("  .type = %s\n", ENUM_STRING(p_s_token->type));
     if (p_s_token->type == TOKEN_TYPE_NUMBER) {
         FW_LOG_DEBUG("  .llval = %llu\n", p_s_token->llval);
     } else if (p_s_token->type == TOKEN_TYPE_STRING) {
@@ -131,6 +136,10 @@ token_t *token_create(token_t *p_token) {
     memcpy(&tmp_token, p_token, sizeof(token_t));
     tmp_token.s_pos = lex_file_position();
 
+    if (lex_is_in_an_expression()) {
+        tmp_token.between_brackets = buffer_ptr(g_p_lex_process->p_parantheses_buffer);
+    }
+
     // Log token information
     debug_log_token(&tmp_token);
 
@@ -158,7 +167,6 @@ const char *read_number_str(void) {
     LEX_GETC_IF(p_buffer, c, IS_NUMERIC(c));
 
     buffer_write(p_buffer, '\0');
-    printf("Closed buffer\n");
     return buffer_ptr(p_buffer);
 }
 
@@ -166,7 +174,6 @@ unsigned long long read_number(void) {
     FW_LOG_ENTERED_FUNCTION();
     const char *p_str = read_number_str();
     unsigned long long value = atoll(p_str);
-    printf("value = %llu\n", value);
     return value;
 }
 
