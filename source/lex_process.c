@@ -1,13 +1,16 @@
 #include <stdlib.h>
 
 #include "compiler/compiler.h"
+#include "trace.h"
 #include "utils/vector.h"
 
 void debug_print_compile_process(compile_process_t *p_process) {
-    printf("p_process->cfile.abs_path = %s\n", p_process->cfile.abs_path);
-    printf("p_process->s_pos.line = %d\n", p_process->s_pos.line);
-    printf("p_process->s_pos.col = %d\n", p_process->s_pos.col);
+    FW_LOG_DEBUG("p_process->cfile.fp = %p\n", p_process->cfile.fp);
+    FW_LOG_DEBUG("p_process->cfile.abs_path = %s\n", p_process->cfile.abs_path);
+    FW_LOG_DEBUG("p_process->s_pos = ", p_process->s_pos);
+    debug_print_pos_struct(&(p_process->s_pos));
 }
+
 lex_process_t *lex_process_create(compile_process_t *p_s_compiler,
                                   lex_process_function_t *p_lex_function, void *p_private) {
     debug_print_compile_process(p_s_compiler);
