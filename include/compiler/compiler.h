@@ -31,7 +31,7 @@ typedef enum token_type {
 } token_type_e;
 
 typedef struct token_s {
-    int type;
+    token_type_e type;
     int flags;
     pos_t s_pos;
     union {
@@ -112,6 +112,7 @@ struct lex_process_s {
     void *p_private;
 };
 
+bool lex_is_in_an_expression(void);
 int compile_file(const char *filename, const char *out_filename, int flags);
 compile_process_t *compile_process_create(const char *filename, const char *out_filename,
                                           int flags);

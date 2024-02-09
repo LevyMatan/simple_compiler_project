@@ -33,6 +33,23 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   )
 endif()
 
+# ---- Python script command ----
+
+# Define the output file that the script will generate
+set(GENERATED_FILE "${CMAKE_CURRENT_SOURCE_DIR}/source/utils/generated_enum_dict.c")
+
+# Find the Python interpreter
+find_package(Python3 REQUIRED COMPONENTS Interpreter)
+
+# Add a custom command that runs the Python script
+add_custom_command(
+  OUTPUT ${GENERATED_FILE}
+  COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate_enum_dict.py --OutputFile
+          ${GENERATED_FILE}
+  COMMENT "Generating source code with Python script"
+  VERBATIM
+)
+
 # ---- Add dependencies via CPM ----
 # see https://github.com/TheLartians/CPM.cmake for more info
 
@@ -79,11 +96,17 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_definitions("DEBUG_ENABLED")
 endif()
 
-# ---- Create an custom target ----
+# ---- Create an custom targets ----
 add_custom_target(
   trace_db COMMAND python ${CMAKE_SOURCE_DIR}/../trace_db.py ${CMAKE_SOURCE_DIR}/../source
                    --output_dir ${CMAKE_SOURCE_DIR}/../
 )
+
+# Add a custom target that depends on the generated file
+add_custom_target(generate_code ALL DEPENDS ${GENERATED_FILE})
+
+# Make the main target depend on the custom target
+add_dependencies(${PROJECT_NAME} generate_code)
 # ---- Create an installable target ----
 # this allows users to install and find the library via `find_package()`.
 

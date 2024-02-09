@@ -17,6 +17,11 @@
 
 #include <stdio.h>
 
+#include "utils/generated_enum_dict.h"
+
+#define VAR_TO_IDX(x) (typename_to_idx(typename(x)))
+#define ENUM_STRING(x) g_a_getters[VAR_TO_IDX(x)](&(x))
+
 /**
  * @brief
  *
@@ -42,6 +47,13 @@ void fw_log(trace_level_e level, const char *file, const char *func, int line, c
             ...);
 
 /**
+ * @brief Conevrt a type name to index, inorder to reach the correct getter function
+ *
+ * @param type_name
+ * @return int
+ */
+int typename_to_idx(const char *type_name);
+/**
  * @brief remove the path to the repo and show only the relative file from the workspace
  *
  * @param path
@@ -64,6 +76,6 @@ const char *strip_path(const char *path);
 #define FW_LOG_WARN(fmt, ...) \
     fw_log(TRACE_LEVEL_WARN, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
 
-#define FW_LOG_ENTERED_FUNCTION() FW_LOG_DEBUG("Entered function\n")
+#define FW_LOG_ENTERED_FUNCTION() FW_LOG_DEBUG("Entered function: %s\n", __func__)
 
 #endif  // TRACE_H
