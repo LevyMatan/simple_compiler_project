@@ -95,8 +95,8 @@ def generate_getter_functions_file(enums, builtin_types, filename):
         # Generate the getter functions for the enums
         type_to_index = {}  # Database for storing the index of each type
         for i, (enum_name, enum_values) in enumerate(enums.items()):
-            f.write(f'char *get_{enum_name}_name(void *p_type) {{\n')
-            f.write( '    int type = *(int *)p_type;\n')
+            f.write(f'char* get_{enum_name}_name(void* p_type) {{\n')
+            f.write( '    int type = *(int*)p_type;\n')
             f.write(f'    if (type < 0 || type >= sizeof({enum_name}_dict) / sizeof({enum_name}_dict[0])) {{\n')
             f.write('        return "Invalid type";\n')
             f.write('    }\n')
@@ -120,7 +120,7 @@ def generate_getter_functions_file(enums, builtin_types, filename):
                 return 'unknown'
         for i, type_name in enumerate(builtin_types, start=len(enums)):
             no_underscore_type_name = type_name.replace(' ', '_')
-            f.write(f'char* get_{no_underscore_type_name}_name(void *p_type) {{\n')
+            f.write(f'char* get_{no_underscore_type_name}_name(void* p_type) {{\n')
             f.write(f'    {type_name} val = *({type_name} *)p_type;\n')
             f.write(f'    sprintf(type_val_string, "{format_from_type(type_name)}\\n", val);\n')
             f.write(f'    return type_val_string;\n')
@@ -161,7 +161,7 @@ def generate_header_file(enums, builtin_types, filename):
 
         # Generate the extern declarations for the getter functions and the getters array
         for enum_name in enums.keys():
-            f.write(f'extern char* get_{enum_name}_name(void *p_type);\n')
+            f.write(f'extern char* get_{enum_name}_name(void* p_type);\n')
             f.write(f'extern char* {enum_name}_dict[{len(enums[enum_name])}];\n')  # Add extern declaration for the dictionary
 
         f.write('extern getter_func_t g_a_getters[];\n')
