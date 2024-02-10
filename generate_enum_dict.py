@@ -95,8 +95,8 @@ def generate_getter_functions_file(enums, builtin_types, filename):
         # Generate the getter functions for the enums
         type_to_index = {}  # Database for storing the index of each type
         for i, (enum_name, enum_values) in enumerate(enums.items()):
-            f.write(f'char* get_{enum_name}_name(void *p_type) {{\n')
-            f.write( '    int type = *(int*)p_type;\n')
+            f.write(f'char *get_{enum_name}_name(void *p_type) {{\n')
+            f.write( '    int type = *(int *)p_type;\n')
             f.write(f'    if (type < 0 || type >= sizeof({enum_name}_dict) / sizeof({enum_name}_dict[0])) {{\n')
             f.write('        return "Invalid type";\n')
             f.write('    }\n')
@@ -121,7 +121,7 @@ def generate_getter_functions_file(enums, builtin_types, filename):
         for i, type_name in enumerate(builtin_types, start=len(enums)):
             no_underscore_type_name = type_name.replace(' ', '_')
             f.write(f'char* get_{no_underscore_type_name}_name(void *p_type) {{\n')
-            f.write(f'    {type_name} val = *({type_name}*)p_type;\n')
+            f.write(f'    {type_name} val = *({type_name} *)p_type;\n')
             f.write(f'    sprintf(type_val_string, "{format_from_type(type_name)}\\n", val);\n')
             f.write(f'    return type_val_string;\n')
             f.write('}\n\n')
@@ -201,9 +201,9 @@ if __name__ == "__main__":
         builtin_types = ['int', 'float', 'double', 'char', 'short', 'long', 'long long']
 
         #modify filename to have "_dict" and "_getter" suffix
-        dict_filename = args.OutputFile.replace('.c', '_dict.c')
+        dict_filename = args.OutputFile.replace('.txt', '_dict.c')
         generate_enum_dict_file(enums, dict_filename)
-        getter_filename = args.OutputFile.replace('.c', '_getter.c')
+        getter_filename = args.OutputFile.replace('.txt', '_getter.c')
         generate_getter_functions_file(enums, builtin_types, getter_filename)
-        header_filename = args.OutputFile.replace('.c', '.h')
+        header_filename = args.OutputFile.replace('.txt', '.h')
         generate_header_file(enums, builtin_types, header_filename)
