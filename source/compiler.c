@@ -51,7 +51,12 @@ int compile_file(const char *filename, const char *out_filename, int flags) {
     }
 
     p_process->p_s_token_vec = p_lex_process->p_s_token_vec;
+
     // Preform parsing
+    if (PARSE_ALL_OK != parse(p_process)) {
+        FW_LOG_ERROR("Failed to parse file!\n");
+        return COMPILER_FAILED_WITH_ERRORS;
+    }
 
     // Preform code generation
 

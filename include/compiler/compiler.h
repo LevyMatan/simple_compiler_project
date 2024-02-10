@@ -13,6 +13,11 @@ typedef struct pos_s {
     const char *filename;
 } pos_t;
 
+typedef enum parser_status {
+    PARSE_ALL_OK,
+    PARSE_FAILED_WITH_ERRORS,
+} parser_status_e;
+
 typedef enum LEXICAL_ANALSYS_STATAUS {
     LEXICAL_ANALSYS_ALL_OK,
     LEXICAL_ANALSYS_FAILED_WITH_ERRORS,
@@ -78,10 +83,82 @@ typedef struct compile_process_s {
 
     } cfile;
 
+    // A vector of tokens from lexical analysis.
     struct vector *p_s_token_vec;
+
+    //
+    struct vector *p_node_vec;
+    struct vector *p_node_tree_vec;
 
     FILE *ofile;
 } compile_process_t;
+
+typedef enum node_type {
+    NODE_TYPE_TOKEN,
+    NODE_TYPE_EXPRESSION,
+    NODE_TYPE_EXPRESSION_PARANTHESES,
+    NODE_TYPE_NUMBER,
+    NODE_TYPE_STRING,
+    NODE_TYPE_IDENTIFIER,
+    NODE_TYPE_OPERATOR,
+    NODE_TYPE_KEYWORD,
+    NODE_TYPE_VARIABLE,
+    NODE_TYPE_VARIABLE_LIST,
+    NODE_TYPE_FUNCTION,
+    NODE_TYPE_BODY,
+
+    NODE_TYPE_STATEMENT_RETURN,
+    NODE_TYPE_STATEMENT_IF,
+    NODE_TYPE_STATEMENT_ELSE,
+    NODE_TYPE_STATEMENT_WHILE,
+    NODE_TYPE_STATEMENT_DO_WHILE,
+    NODE_TYPE_STATEMENT_FOR,
+    NODE_TYPE_STATEMENT_BREAK,
+    NODE_TYPE_STATEMENT_CONTINUE,
+    NODE_TYPE_STATEMENT_SWITCH,
+    NODE_TYPE_STATEMENT_CASE,
+    NODE_TYPE_STATEMENT_DEFAULT,
+    NODE_TYPE_STATEMENT_GOTO,
+
+    NODE_TYPE_UNARY,
+    NODE_TYPE_TENARY,
+    NODE_TYPE_LABEL,
+    NODE_TYPE_STRUCT,
+    NODE_TYPE_ENUM,
+    NODE_TYPE_UNION,
+    NODE_TYPE_TYPEDEF,
+    NODE_TYPE_INCLUDE,
+    NODE_TYPE_DEFINE,
+    NODE_TYPE_MACRO,
+    NODE_TYPE_BRACKET,
+    NODE_TYPE_CAST,
+    NODE_TYPE_BLANK,
+
+} node_type_e;
+
+typedef struct node_s {
+    node_type_e type;
+    int flags;
+
+    pos_t s_pos;
+
+    struct node_binded {
+        // Pointer to our body node
+        struct node_s *p_node;
+
+        // Pointer to the function this node is in.
+        struct node_s *p_function;
+    } binded;
+
+    union {
+        char cval;
+        const char *sval;
+        unsigned int ival;
+        unsigned long lval;
+        unsigned long long llval;
+    };
+
+} node_t;
 
 typedef struct lex_process_s lex_process_t;
 
@@ -143,9 +220,22 @@ int lex(lex_process_t *p_lex_process);
  *
  */
 lex_process_t *tokens_build_for_string(compile_process_t *p_compiler, const char *str);
-
+int parse(compile_process_t *p_process);
 void debug_print_compile_process(compile_process_t *p_process);
 void debug_print_pos_struct(pos_t *p_pos);
+
+/* Node Functions*/
+void node_set_vector(struct vector *p_node_vec, struct vector *p_node_vec_root);
+void node_push(node_t *p_node);
+node_t *node_peek_or_null();
+node_t *node_peek();
+node_t *node_pop();
+node_t *node_create(node_t *p_node);
+
+/* Token Functions*/
+bool token_is_nl_or_comment_or_nl_seperator(const token_t *p_token);
+bool token_is_symbol(const token_t *p_token, char symbol);
+
 #endif  // MATAN_COMPILER_H
 
 #ifdef __cplusplus

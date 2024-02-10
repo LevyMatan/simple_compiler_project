@@ -3,6 +3,7 @@
 
 #include "compiler/compiler.h"
 #include "trace.h"
+#include "utils/vector.h"
 
 compile_process_t *compile_process_create(const char *filename, const char *out_filename,
                                           int flags) {
@@ -23,6 +24,8 @@ compile_process_t *compile_process_create(const char *filename, const char *out_
     }
 
     compile_process_t *p_process = calloc(1, sizeof(compile_process_t));
+    p_process->p_node_vec = vector_create(sizeof(node_t *));
+    p_process->p_node_tree_vec = vector_create(sizeof(node_t *));
     p_process->cfile.fp = file;
     p_process->cfile.abs_path = filename;
     p_process->ofile = out_file;
