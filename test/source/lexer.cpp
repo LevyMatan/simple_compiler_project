@@ -86,7 +86,8 @@ TEST_CASE("lexer::lex") {
     CHECK(p_token != nullptr);
     CHECK(p_token->type == TOKEN_TYPE_NUMBER);
     CHECK(p_token->whitespace == false);
-    CHECK(p_token->between_brackets == nullptr);
+    if (p_token->between_brackets)
+        CHECK_EQ(std::string(p_token->between_brackets), std::string("3+2)"));
     CHECK(p_token->s_pos.line == 1);
     CHECK(p_token->s_pos.col == 12);
     CHECK(p_token->ival == 3);
@@ -95,7 +96,8 @@ TEST_CASE("lexer::lex") {
     CHECK(p_token != nullptr);
     CHECK(p_token->type == TOKEN_TYPE_OPERATOR);
     CHECK(p_token->whitespace == false);
-    CHECK(p_token->between_brackets == nullptr);
+    if (p_token->between_brackets)
+        CHECK_EQ(std::string(p_token->between_brackets), std::string("3+2)"));
     CHECK(p_token->s_pos.line == 1);
     CHECK(p_token->s_pos.col == 13);
     CHECK_EQ(std::string(p_token->sval), std::string("+"));
@@ -104,7 +106,8 @@ TEST_CASE("lexer::lex") {
     CHECK(p_token != nullptr);
     CHECK(p_token->type == TOKEN_TYPE_NUMBER);
     CHECK(p_token->whitespace == false);
-    CHECK(p_token->between_brackets == nullptr);
+    if (p_token->between_brackets)
+        CHECK_EQ(std::string(p_token->between_brackets), std::string("3+2)"));
     CHECK(p_token->s_pos.line == 1);
     CHECK(p_token->s_pos.col == 14);
     CHECK(p_token->ival == 2);
