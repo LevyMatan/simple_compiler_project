@@ -216,7 +216,8 @@ token_t *token_make_number(void) {
 static token_t *token_make_string(const char start_delimiter, const char end_delimiter) {
     FW_LOG_ENTERED_FUNCTION();
     struct buffer *p_buffer = buffer_create();
-    assert(nextc() == start_delimiter);
+    char next_char = nextc();
+    assert(next_char == start_delimiter);
     char c = nextc();
     while (c != end_delimiter && c != EOF) {
         if (c == '\\') {
