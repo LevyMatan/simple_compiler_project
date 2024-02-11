@@ -79,6 +79,9 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
   add_compile_definitions("DEBUG_ENABLED")
 endif()
 
+if(MSVC)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS)
+endif()
 # ---- Create an installable target ----
 # this allows users to install and find the library via `find_package()`.
 
