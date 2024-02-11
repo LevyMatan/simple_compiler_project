@@ -65,7 +65,7 @@ def main():
     files = glob.glob(source_dir + '/**/*.c', recursive=True)
     print('Found ' + str(len(files)) + ' C source files.')
 
-    with open(output_file, 'w', newline='') as csvfile:
+    with open(output_file, 'w', newline='', encoding='utf-8') as csvfile:
         print('Writing to ' + output_file)
         # print full path of created file:
         print(os.path.abspath(csvfile.name))
@@ -82,3 +82,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
