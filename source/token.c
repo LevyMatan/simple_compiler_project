@@ -14,6 +14,6 @@ bool token_is_symbol(const token_t *p_token, char symbol) {
 }
 
 bool token_is_nl_or_comment_or_nl_seperator(const token_t *p_token) {
-    return p_token->type == TOKEN_TYPE_NEWLINE || p_token->type == TOKEN_TYPE_COMMENT
-           || token_is_symbol(p_token, '\\');
+    return (p_token->type == TOKEN_TYPE_NEWLINE) || (p_token->type == TOKEN_TYPE_COMMENT)
+           || (token_is_symbol(p_token, '\\'));
 }

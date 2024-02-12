@@ -65,14 +65,14 @@
 lex_process_t *g_p_lex_process;
 static token_t tmp_token;
 
-static pos_t lex_file_position(void) { return g_p_lex_process->s_pos; }
+STATIC_FUNCTION pos_t lex_file_position(void) { return g_p_lex_process->s_pos; }
 
-static char peekc(void) {
+STATIC_FUNCTION char peekc(void) {
     FW_LOG_ENTERED_FUNCTION();
     return g_p_lex_process->function->peek_char(g_p_lex_process);
 }
 
-static char nextc(void) {
+STATIC_FUNCTION char nextc(void) {
     char c = g_p_lex_process->function->next_char(g_p_lex_process);
 
     if (lex_is_in_an_expression()) {
@@ -88,15 +88,15 @@ static char nextc(void) {
     return c;
 }
 
-static void pushc(char c) { g_p_lex_process->function->push_char(g_p_lex_process, c); }
+STATIC_FUNCTION void pushc(char c) { g_p_lex_process->function->push_char(g_p_lex_process, c); }
 
-static char peek_next_c(void) {
+STATIC_FUNCTION char peek_next_c(void) {
     char current_char = nextc();
     char next_char = peekc();
     pushc(current_char);
     return next_char;
 }
-static void lex_new_expression(void) {
+STATIC_FUNCTION void lex_new_expression(void) {
     FW_LOG_ENTERED_FUNCTION();
     g_p_lex_process->current_expression_count++;
     if (1 == g_p_lex_process->current_expression_count) {
@@ -146,12 +146,12 @@ token_t *token_create(token_t *p_token) {
     return &tmp_token;
 }
 
-static token_t *lexer_last_token(void) {
+STATIC_FUNCTION token_t *lexer_last_token(void) {
     FW_LOG_ENTERED_FUNCTION();
     return vector_back_or_null(g_p_lex_process->p_s_token_vec);
 }
 
-static token_t *handle_whitespace(void) {
+STATIC_FUNCTION token_t *handle_whitespace(void) {
     FW_LOG_ENTERED_FUNCTION();
     token_t *p_s_token = lexer_last_token();
     if (p_s_token) {
@@ -213,7 +213,7 @@ token_t *token_make_number(void) {
     return token_make_number_by_value(read_number());
 }
 
-static token_t *token_make_string(const char start_delimiter, const char end_delimiter) {
+STATIC_FUNCTION token_t *token_make_string(const char start_delimiter, const char end_delimiter) {
     FW_LOG_ENTERED_FUNCTION();
     struct buffer *p_buffer = buffer_create();
     char next_char = nextc();
@@ -264,7 +264,7 @@ static token_t *token_make_string(const char start_delimiter, const char end_del
     return token_create(&s_token);
 }
 
-static bool op_treated_as_one(const char op) {
+STATIC_FUNCTION bool op_treated_as_one(const char op) {
     switch (op) {
         case '*':
         case '%':
@@ -282,7 +282,7 @@ static bool op_treated_as_one(const char op) {
     }
 }
 
-static bool is_single_operator(const char c) {
+STATIC_FUNCTION bool is_single_operator(const char c) {
     switch (c) {
         case '+':
         case '-':
@@ -308,7 +308,7 @@ static bool is_single_operator(const char c) {
     }
 }
 
-static bool op_valid(const char *op) {
+STATIC_FUNCTION bool op_valid(const char *op) {
     return S_EQ(op, "++") || S_EQ(op, "--") || S_EQ(op, "+=") || S_EQ(op, "-=") || S_EQ(op, "*=")
            || S_EQ(op, "/=") || S_EQ(op, "%=") || S_EQ(op, "&=") || S_EQ(op, "|=") || S_EQ(op, "^=")
            || S_EQ(op, "<<") || S_EQ(op, ">>") || S_EQ(op, "&&") || S_EQ(op, "||") || S_EQ(op, "==")
@@ -316,7 +316,7 @@ static bool op_valid(const char *op) {
            || S_EQ(op, "...");
 }
 
-static void read_op_flush_back_keep_first(struct buffer *p_buffer) {
+STATIC_FUNCTION void read_op_flush_back_keep_first(struct buffer *p_buffer) {
     FW_LOG_ENTERED_FUNCTION();
     int len = p_buffer->len;
     for (int i = len - 1; i >= 1; i--) {
@@ -373,7 +373,7 @@ token_t *token_make_operator_or_string(void) {
     return p_s_token;
 }
 
-static void lex_finish_expression(void) {
+STATIC_FUNCTION void lex_finish_expression(void) {
     FW_LOG_ENTERED_FUNCTION();
     g_p_lex_process->current_expression_count--;
     if (g_p_lex_process->current_expression_count < 0) {
@@ -381,7 +381,7 @@ static void lex_finish_expression(void) {
     }
 }
 
-static token_t *token_make_symbol(void) {
+STATIC_FUNCTION token_t *token_make_symbol(void) {
     FW_LOG_ENTERED_FUNCTION();
     char c = nextc();
     if (')' == c) {
@@ -396,7 +396,7 @@ static token_t *token_make_symbol(void) {
 }
 
 // clang-format off
-static bool identifier_is_keyword(const char *p_str) {
+STATIC_FUNCTION bool identifier_is_keyword(const char *p_str) {
     // Verify if the string is a keyword
     return S_EQ(p_str, "if")       || S_EQ(p_str, "else")     || S_EQ(p_str, "while") || S_EQ(p_str, "for")
         || S_EQ(p_str, "do")       || S_EQ(p_str, "return")   || S_EQ(p_str, "break")
@@ -416,7 +416,7 @@ static bool identifier_is_keyword(const char *p_str) {
 }
 // clang-format on
 
-static token_t *token_make_identifier_or_keyword(void) {
+STATIC_FUNCTION token_t *token_make_identifier_or_keyword(void) {
     FW_LOG_ENTERED_FUNCTION();
     struct buffer *p_buffer = buffer_create();
     LEX_GETC_IF(p_buffer, c,
@@ -513,7 +513,7 @@ char lex_get_escaped_char(char c) {
     }
 }
 
-static char assert_next_char(char expected) {
+STATIC_FUNCTION char assert_next_char(char expected) {
     char c = nextc();
     if (c != expected) {
         compiler_error(g_p_lex_process->p_s_compiler, "Expected '%c' but got '%c'\n", expected, c);

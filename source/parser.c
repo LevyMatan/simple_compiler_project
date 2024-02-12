@@ -5,7 +5,7 @@
 static compile_process_t *g_p_process = NULL;
 static token_t *g_p_parser_last_token = NULL;
 
-static void parser_ignore_nl_or_comment(token_t *p_token) {
+STATIC_FUNCTION void parser_ignore_nl_or_comment(token_t *p_token) {
     FW_LOG_ENTERED_FUNCTION();
     while (p_token && token_is_nl_or_comment_or_nl_seperator(p_token)) {
         // Skip the token
@@ -14,7 +14,7 @@ static void parser_ignore_nl_or_comment(token_t *p_token) {
     }
 }
 
-static token_t *token_next() {
+STATIC_FUNCTION token_t *token_next() {
     FW_LOG_ENTERED_FUNCTION();
     token_t *p_next_token = (token_t *)vector_peek_no_increment(g_p_process->p_s_token_vec);
     parser_ignore_nl_or_comment(p_next_token);
@@ -23,7 +23,7 @@ static token_t *token_next() {
     return vector_peek(g_p_process->p_s_token_vec);
 }
 
-static token_t *token_peek_next() {
+STATIC_FUNCTION token_t *token_peek_next() {
     FW_LOG_ENTERED_FUNCTION();
     token_t *p_next_token = (token_t *)vector_peek_no_increment(g_p_process->p_s_token_vec);
     parser_ignore_nl_or_comment(p_next_token);
