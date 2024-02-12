@@ -103,3 +103,63 @@ TEST_CASE("identifier_is_keyword") {
     CHECK(identifier_is_keyword("notakeyword") == false);
     CHECK(identifier_is_keyword("also_not_a_keyword") == false);
 }
+
+TEST_CASE("op_treated_as_one") {
+    CHECK(op_treated_as_one('*') == true);
+    CHECK(op_treated_as_one('%') == true);
+    CHECK(op_treated_as_one('!') == true);
+    CHECK(op_treated_as_one('^') == true);
+    CHECK(op_treated_as_one('~') == true);
+    CHECK(op_treated_as_one('(') == true);
+    CHECK(op_treated_as_one('[') == true);
+    CHECK(op_treated_as_one(',') == true);
+    CHECK(op_treated_as_one('.') == true);
+    CHECK(op_treated_as_one('?') == true);
+    CHECK(op_treated_as_one('a') == false);
+}
+
+TEST_CASE("is_single_operator") {
+    CHECK(is_single_operator('+') == true);
+    CHECK(is_single_operator('-') == true);
+    CHECK(is_single_operator('/') == true);
+    CHECK(is_single_operator('*') == true);
+    CHECK(is_single_operator('=') == true);
+    CHECK(is_single_operator('>') == true);
+    CHECK(is_single_operator('<') == true);
+    CHECK(is_single_operator('&') == true);
+    CHECK(is_single_operator('|') == true);
+    CHECK(is_single_operator('%') == true);
+    CHECK(is_single_operator('^') == true);
+    CHECK(is_single_operator('~') == true);
+    CHECK(is_single_operator('!') == true);
+    CHECK(is_single_operator('[') == true);
+    CHECK(is_single_operator('(') == true);
+    CHECK(is_single_operator(',') == true);
+    CHECK(is_single_operator('.') == true);
+    CHECK(is_single_operator('?') == true);
+    CHECK(is_single_operator('a') == false);
+}
+
+TEST_CASE("op_valid") {
+    CHECK(op_valid("++") == true);
+    CHECK(op_valid("--") == true);
+    CHECK(op_valid("+=") == true);
+    CHECK(op_valid("-=") == true);
+    CHECK(op_valid("*=") == true);
+    CHECK(op_valid("/=") == true);
+    CHECK(op_valid("%=") == true);
+    CHECK(op_valid("&=") == true);
+    CHECK(op_valid("|=") == true);
+    CHECK(op_valid("^=") == true);
+    CHECK(op_valid("<<") == true);
+    CHECK(op_valid(">>") == true);
+    CHECK(op_valid("&&") == true);
+    CHECK(op_valid("||") == true);
+    CHECK(op_valid("==") == true);
+    CHECK(op_valid("!=") == true);
+    CHECK(op_valid("<=") == true);
+    CHECK(op_valid(">=") == true);
+    CHECK(op_valid("->") == true);
+    CHECK(op_valid("...") == true);
+    CHECK(op_valid("invalid") == false);
+}

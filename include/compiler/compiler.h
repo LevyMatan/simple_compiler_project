@@ -244,6 +244,9 @@ bool token_is_symbol(const token_t *p_token, char symbol);
 
 /* Private Functions*/
 STATIC_FUNCTION bool identifier_is_keyword(const char *p_str);
+STATIC_FUNCTION bool op_treated_as_one(const char op);
+STATIC_FUNCTION bool is_single_operator(const char c);
+STATIC_FUNCTION bool op_valid(const char *op);
 
 #endif  // MATAN_COMPILER_H
 
