@@ -8,9 +8,11 @@
         long: "long",                                            \
         long long: "long long",                                  \
         enum trace_level: "trace_level",                         \
+        enum trace_status: "trace_status",                       \
         enum parser_status: "parser_status",                     \
         enum LEXICAL_ANALSYS_STATAUS: "LEXICAL_ANALSYS_STATAUS", \
         enum token_type: "token_type",                           \
+        enum token_flags: "token_flags",                         \
         enum number_type: "number_type",                         \
         enum node_type: "node_type",                             \
         default: "unknown")
@@ -19,12 +21,16 @@ extern char type_val_string[1000];
 
 extern char* get_trace_level_name(void* p_type);
 extern char* trace_level_dict[4];
+extern char* get_trace_status_name(void* p_type);
+extern char* trace_status_dict[5];
 extern char* get_parser_status_name(void* p_type);
 extern char* parser_status_dict[2];
 extern char* get_LEXICAL_ANALSYS_STATAUS_name(void* p_type);
 extern char* LEXICAL_ANALSYS_STATAUS_dict[2];
 extern char* get_token_type_name(void* p_type);
 extern char* token_type_dict[9];
+extern char* get_token_flags_name(void* p_type);
+extern char* token_flags_dict[1];
 extern char* get_number_type_name(void* p_type);
 extern char* number_type_dict[4];
 extern char* get_node_type_name(void* p_type);

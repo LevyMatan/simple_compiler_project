@@ -13,10 +13,11 @@
  * @copyright Copyright (c) 2024
  *
  */
-#pragma once
 
+#include <stdbool.h>
 #include <stdio.h>
 
+#include "uthash.h"
 #include "utils/generated_enum_dict.h"
 
 #define VAR_TO_IDX(x) (typename_to_idx(typename(x)))
@@ -36,6 +37,18 @@ typedef enum trace_level {
 /**
  * @brief
  *
+ */
+typedef enum trace_status {
+    TRACE_STATUS_OK,
+    TRACE_STATUS_FAILED_TO_READ_CONF_FILE,
+    TRACE_STATUS_FAILED_TO_CONVERT_FUNC_STRING,
+    TRACE_STATUS_GENERAL_FAIL,
+    TRACE_STATUS_DEBUG_DISABLED,
+} trace_status_e;
+
+/**
+ * @brief
+ *
  * @param level
  * @param file
  * @param func
@@ -47,12 +60,45 @@ void fw_log(trace_level_e level, const char *file, const char *func, int line, c
             ...);
 
 /**
- * @brief Conevrt a type name to index, inorder to reach the correct getter function
+ * @brief
+ *
+ * @param status
+ */
+void handle_tracer_status(trace_status_e status);
+
+/**
+ * @brief
+ *
+ * @param func
+ * @return true
+ * @return false
+ */
+bool is_function_enabled(const char *func);
+
+/**
+ * @brief Convert a type name to index, in-order to reach the correct getter function
  *
  * @param type_name
  * @return int
  */
 int typename_to_idx(const char *type_name);
+
+typedef struct func_node {
+    char func_name[1000];
+    char file_name[1000];
+    bool is_enabled;
+    int idx;
+    UT_hash_handle hh;
+} func_node_t;
+
+/**
+ * @brief
+ *
+ * @param conf_file_path
+ * @return trace_status_e
+ */
+trace_status_e init_tracer(const char *conf_file_path);
+
 /**
  * @brief remove the path to the repo and show only the relative file from the workspace
  *
@@ -63,8 +109,11 @@ const char *strip_path(const char *path);
 #define __FILENAME__ (strip_path(__FILE__))
 
 #ifdef DEBUG_ENABLED
-#    define FW_LOG_DEBUG(fmt, ...) \
-        fw_log(TRACE_LEVEL_DEBUG, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__)
+#    define FW_LOG_DEBUG(fmt, ...)                                                               \
+        {                                                                                        \
+            if (is_function_enabled(__func__))                                                   \
+                fw_log(TRACE_LEVEL_DEBUG, __FILENAME__, __func__, __LINE__, fmt, ##__VA_ARGS__); \
+        }
 #else
 #    define FW_LOG_DEBUG(fmt, ...)
 #endif

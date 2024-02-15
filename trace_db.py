@@ -69,7 +69,7 @@ def main():
         print('Writing to ' + output_file)
         # print full path of created file:
         print(os.path.abspath(csvfile.name))
-        fieldnames = ['index', 'function', 'file']
+        fieldnames = ['index', 'function', 'file', 'is_enabled']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
@@ -77,7 +77,7 @@ def main():
         for file in files:
             functions = find_functions(file, include_dir=include_dir)
             for function in functions:
-                writer.writerow({'index': index, 'function': function, 'file': file})
+                writer.writerow({'index': index, 'function': function, 'file': file, 'is_enabled': 1})
                 index += 1
 
 if __name__ == "__main__":

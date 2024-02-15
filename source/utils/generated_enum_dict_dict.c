@@ -9,6 +9,14 @@ char* trace_level_dict[4] = {
     "TRACE_LEVEL_ERROR",
 };
 
+char* trace_status_dict[5] = {
+    "TRACE_STATUS_OK",
+    "TRACE_STATUS_FAILED_TO_READ_CONF_FILE",
+    "TRACE_STATUS_FAILED_TO_CONVERT_FUNC_STRING",
+    "TRACE_STATUS_GENERAL_FAIL",
+    "TRACE_STATUS_DEBUG_DISABLED",
+};
+
 char* parser_status_dict[2] = {
     "PARSE_ALL_OK",
     "PARSE_FAILED_WITH_ERRORS",
@@ -23,6 +31,10 @@ char* token_type_dict[9] = {
     "TOKEN_TYPE_IDENTIFIER", "TOKEN_TYPE_KEYWORD", "TOKEN_TYPE_OPERATOR",
     "TOKEN_TYPE_SYMBOL",     "TOKEN_TYPE_NUMBER",  "TOKEN_TYPE_STRING",
     "TOKEN_TYPE_COMMENT",    "TOKEN_TYPE_NEWLINE", "TOKEN_TYPE_EOF",
+};
+
+char* token_flags_dict[1] = {
+    "NODE_FLAG_INSIDE_EXPRESSION = 1 << 0",
 };
 
 char* number_type_dict[4] = {
